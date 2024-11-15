@@ -3,9 +3,9 @@ from langchain_core.prompts import ChatPromptTemplate
 import os
 from gtts import gTTS
 
-# Function to handle conversation with BayMax (Healthcare Assistant)
+# Function to handle conversation
 def handle_conversation(user_input, context):
-    # Define the prompt template
+    # prompt
     template = """
         Write a concise response to the user
         Your name is "baemax"
@@ -20,15 +20,15 @@ def handle_conversation(user_input, context):
     prompt = ChatPromptTemplate.from_template(template)
     chain = prompt | model
     
-    # Generate the response based on user input
+    # Generate response
     result = chain.invoke({"context": context, "patientinput": user_input})
     
-    # Update the context with the latest interaction
+    # Update context 
     context += f"\nUser: {user_input}\nAI: {result}"
     
     return result, context
 
-# Function to speak the text using gTTS
+# text to speech
 def speak(text):
     tts = gTTS(text=text, lang='en', slow=False)
     tts.save("output.mp3")
@@ -47,6 +47,6 @@ def run_baymax():
             break
         
         result, context = handle_conversation(user_input, context)
-        speak(result)  # Speak the response from BayMax
+        speak(result)  # Speak the response
         print(f"BaeMax: {result}")
 
