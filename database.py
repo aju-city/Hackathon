@@ -7,16 +7,14 @@ warnings.filterwarnings("ignore", category=UserWarning, module="google")
 
 
 
-# Initialize Firebase with the service account credentials
+# Initialize Firebase
 cred = credentials.Certificate(r"C:\Users\User\Documents\City\baymax_hackathon_keys.json")
 firebase_admin.initialize_app(cred)
 
-# Get Firestore client
 db = firestore.client()
 
 
 def create_user(user_id, name, email, date_of_birth):
-    # Reference to the 'users' collection and the user's document
     user_ref = db.collection('users').document(user_id)
     
     # Set the user's data
@@ -30,7 +28,6 @@ def create_user(user_id, name, email, date_of_birth):
 
 def get_user(user_id):
     try:
-        # Reference to the 'users' collection and user document
         user_ref = db.collection('users').document(user_id)
         user_doc = user_ref.get()
 
@@ -46,7 +43,6 @@ def get_user(user_id):
     
 def update_user(user_id, updated_data):
     try:
-        # Reference to the user's document
         user_ref = db.collection('users').document(user_id)
         
         # Update the user data
@@ -76,9 +72,9 @@ def get_symptom_report(user_id):
 
         symptom_reports = []
         for doc in symptoms_docs:
-            symptom_reports.append(doc.to_dict())  # Append the symptom report data
+            symptom_reports.append(doc.to_dict())  # Append symptom report data
 
-        return symptom_reports  # Return the list of symptom reports
+        return symptom_reports  # Return list of symptom reports
     
     except Exception as e:
         # Catch any exceptions (including Firestore-related exceptions)
@@ -87,7 +83,7 @@ def get_symptom_report(user_id):
     
 def update_symptom_report(user_id, new_symptom_data):
     try:
-        # Query the 'symptoms' collection for the specific user_id
+        # Query 'symptoms' collection for the specific user_id
         symptoms_ref = db.collection('symptoms').where('user_id', '==', user_id)
         symptoms_docs = symptoms_ref.stream()
 
@@ -106,10 +102,10 @@ def update_symptom_report(user_id, new_symptom_data):
         print(f"Error updating symptom report: {e}")
 
 def create_dementia_query(user_id, query, response):
-    # Reference to the 'dementia_queries' collection
+    # Reference to 'dementia_queries' collection
     dementia_ref = db.collection('dementia_queries').document()
     
-    # Set the dementia query data
+    # Set dementia query data
     dementia_ref.set({
         'user_id': user_id,
         'query': query,
@@ -119,7 +115,7 @@ def create_dementia_query(user_id, query, response):
 
 def get_dementia_query(user_id):
     try:
-        # Reference to the 'dementia_queries' collection
+        # Reference to 'dementia_queries' collection
         dementia_ref = db.collection('dementia_queries').where('user_id', '==', user_id)
         dementia_docs = dementia_ref.stream()
 
@@ -127,7 +123,7 @@ def get_dementia_query(user_id):
         for doc in dementia_docs:
             dementia_queries.append(doc.to_dict())  # Append dementia query data
 
-        return dementia_queries  # Return the list of dementia queries
+        return dementia_queries  # Return list of dementia queries
     
     except Exception as e:
         # Catch any exceptions (including Firestore-related exceptions)
@@ -136,7 +132,7 @@ def get_dementia_query(user_id):
     
 def update_dementia_query(user_id, new_query_data):
     try:
-        # Query the 'dementia_queries' collection for the specific user_id
+        # Query  'dementia_queries' collection for the specific user_id
         dementia_ref = db.collection('dementia_queries').where('user_id', '==', user_id)
         dementia_docs = dementia_ref.stream()
 
@@ -159,10 +155,10 @@ def update_dementia_query(user_id, new_query_data):
 
 
 def create_mood_monitoring(user_id, mood_data):
-    # Reference to the 'mood_monitoring' collection
+    # Reference to 'mood_monitoring' collection
     mood_ref = db.collection('mood_monitoring').document()
     
-    # Set the mood data
+    # Set mood data
     mood_ref.set({
         'user_id': user_id,
         'mood_data': mood_data,  # e.g., { 'aggressive': 0, 'depressive': 1 }
@@ -171,7 +167,7 @@ def create_mood_monitoring(user_id, mood_data):
 
 def get_mood_monitoring(user_id):
     try:
-        # Reference to the 'mood_monitoring' collection
+        # Reference to 'mood_monitoring' collection
         mood_ref = db.collection('mood_monitoring').where('user_id', '==', user_id)
         mood_docs = mood_ref.stream()
 
@@ -179,7 +175,7 @@ def get_mood_monitoring(user_id):
         for doc in mood_docs:
             mood_data.append(doc.to_dict())  # Append mood data
 
-        return mood_data  # Return the list of mood data
+        return mood_data  # Return list of mood data
     
     except Exception as e:
         # Catch any exceptions (including Firestore-related exceptions)
@@ -188,13 +184,13 @@ def get_mood_monitoring(user_id):
 
 def update_mood_monitoring(user_id, mood_data_update):
     try:
-        # Query the 'mood_monitoring' collection for documents with the specified user_id
+        # Query 'mood_monitoring' collection for documents with the specified user_id
         mood_ref = db.collection('mood_monitoring').where('user_id', '==', user_id)
         mood_docs = mood_ref.stream()
         
         updated = False
         for doc in mood_docs:
-            # Update the mood_data field in each document with the new data
+            # Update mood_data field in each document with the new data
             doc_ref = db.collection('mood_monitoring').document(doc.id)
             mood_data_update['timestamp'] = firestore.SERVER_TIMESTAMP
             doc_ref.update({'mood_data': mood_data_update})
@@ -212,10 +208,10 @@ def update_mood_monitoring(user_id, mood_data_update):
 ## Example usage
 
 def create_mental_health_conversation(user_id, conversation):
-    # Reference to the 'mental_health_conversations' collection
+    # Reference to 'mental_health_conversations' collection
     conversation_ref = db.collection('mental_health_conversations').document()
     
-    # Set the conversation data
+    # Set conversation data
     conversation_ref.set({
         'user_id': user_id,
         'conversation': conversation,  # e.g., a list of chat messages
@@ -224,7 +220,7 @@ def create_mental_health_conversation(user_id, conversation):
 
 def get_mental_health_conversation(user_id):
     try:
-        # Reference to the 'mental_health_conversations' collection
+        # Reference to 'mental_health_conversations' collection
         conversations_ref = db.collection('mental_health_conversations').where('user_id', '==', user_id)
         conversations_docs = conversations_ref.stream()
 
@@ -232,7 +228,7 @@ def get_mental_health_conversation(user_id):
         for doc in conversations_docs:
             conversations.append(doc.to_dict())  # Append conversation data
 
-        return conversations  # Return the list of mental health conversations
+        return conversations  # Return list of mental health conversations
     
     except Exception as e:
         # Catch any exceptions (including Firestore-related exceptions)
@@ -242,14 +238,14 @@ def get_mental_health_conversation(user_id):
 
 def update_mental_health_conversation(user_id, new_conversation_data):
     try:
-        # Query the 'mental_health_conversations' collection for the specific user_id
+        # Query 'mental_health_conversations' collection for the specific user_id
         conversation_ref = db.collection('mental_health_conversations').where('user_id', '==', user_id)
         conversation_docs = conversation_ref.stream()
 
         updated = False
         for doc in conversation_docs:
             doc_ref = db.collection('mental_health_conversations').document(doc.id)
-            # Add or update the 'timestamp' field
+            # Add or update 'timestamp' field
             new_conversation_data['timestamp'] = firestore.SERVER_TIMESTAMP
             doc_ref.update(new_conversation_data)
             updated = True
@@ -285,7 +281,7 @@ create_mental_health_conversation('user_12345', [{'role': 'user', 'message': 'I 
 '''
 
 
-# Example usage of the functions to retrieve data
+# Example usage of functions to retrieve data
 user_data = get_user('user_12345')
 symptoms_data = get_symptom_report('user_12345')
 dementia_queries_data = get_dementia_query('user_12345')
