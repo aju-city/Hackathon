@@ -10,21 +10,18 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 from database import db
 
-# Function to load the data from the CSV file
+# Function to load data from the CSV file
 def load_data(csv_path):
     df = pd.read_csv(csv_path)
       
     # Handle missing values by dropping rows with NaN values in the 'Tweet' column
     df = df.dropna(subset=['Tweet', 'Sentiment'])
 
-    # Alternatively, you could replace NaN values with an empty string or other placeholder
-    # df['Tweet'] = df['Tweet'].fillna('')
-
-    X = df['Tweet']  # 'Tweet' column
-    y = df['Sentiment']  # 'Sentiment' column
+    X = df['Tweet'] # Column names in csv file
+    y = df['Sentiment']
     return X, y
 
-# Function to train the sentiment analysis model
+# Function to train sentiment analysis model
 def train_model(X, y):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -41,10 +38,10 @@ def train_model(X, y):
     y_pred = model.predict(X_test)
     print(f"Classification report:\n{classification_report(y_test, y_pred)}")
     
-    # Return the trained model
+    # Return trained model
     return model
 
-# Function to analyze the sentiment of user input
+# Function to analyze sentiment of user input
 def analyze_user_input(user_input, model):
     sentiment = model.predict([user_input])[0]
     # Here, we don't use probability for simplicity; you can enhance it
@@ -62,12 +59,12 @@ def analyze_user_input(user_input, model):
 
     return sentiment_label, probability
 
-# Save the trained model to a file
+# Save trained model to a file
 def save_model(model, filename="sentiment_model.pkl"):
     with open(filename, 'wb') as f:
         pickle.dump(model, f)
 
-# Load the trained model from a file
+# Load trained model from a file
 def load_model(filename="sentiment_model.pkl"):
     with open(filename, 'rb') as f:
         return pickle.load(f)
